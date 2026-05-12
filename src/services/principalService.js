@@ -1,3 +1,16 @@
+
+
+
+// {
+//     "username": "motilal",
+//     "email": "motilal@gmail.com",
+//     "phone_number": "9819294515",
+//     "experience": "4 years",
+//     "qualification": "CSE"
+// }
+
+
+
 import axios from "axios";
 
 const BASE_URL = "http://localhost:8000/api";
@@ -20,7 +33,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-export const getMyStudentProfile = async () => {
-    const response = await api.get("/student/me/");
+export const getMyPrincipalProfile = async () => {
+    const response = await api.get("principal/profile/");
     return response.data;
 };
