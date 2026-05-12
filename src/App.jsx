@@ -14,12 +14,15 @@ import TeacherDashboard from "./pages/dashboard/Teacher/TeacherDashboard"
 import StudentDashboard from "./pages/dashboard/Student/StudentDashboard"
 import LibraryDashboard from "./pages/dashboard/Librarian/LibrarianDashboard"
 import ProtectedRoute from "./routes/ProtectedRoute"
+import Unauthorized from "./pages/errors/Unauthorized";
+import NotFound from "./pages/errors/NotFound";
  export default function App() {
      return (
        <BrowserRouter>
          <Navbar isAuthenticated={false} />
          <Routes>
 
+            <Route path="/unauthorized" element={<Unauthorized />} />
            <Route path="/" element={<Home/>} />
            <Route path="/signup" element={<Signup />} />
            <Route path="/login"  element={<Login />}  />
@@ -67,6 +70,7 @@ import ProtectedRoute from "./routes/ProtectedRoute"
             }
            />
 
+            <Route path="*" element={<NotFound />} /> 
          </Routes>
        </BrowserRouter>
      );

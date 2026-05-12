@@ -714,11 +714,11 @@ export default function Login() {
 
       // 3. REDIRECT based on role
       if (user.role === "principal") {
-        navigate("/admin");
+        navigate("/principal");
       } else if (user.role === "teacher") {
         navigate("/teacher");
       } else if (user.role === "librarian") {
-        navigate("/library");
+        navigate("/librarian");
       } else {
         navigate("/student");
       }
