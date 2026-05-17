@@ -24,3 +24,4 @@ export const getMyStudentProfile = async () => {
     const response = await api.get("/student/me/");
     return response.data;
 };
+
