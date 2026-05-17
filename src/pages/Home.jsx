@@ -103,6 +103,36 @@ export default function Home() {
     }
   }, []);
 
+  //  const text = "The Operating System for Modern Schools";
+
+  // const [displayedText, setDisplayedText] = useState("");
+  // const [isDeleting, setIsDeleting] = useState(false);
+  // const [index, setIndex] = useState(0);
+
+  // useEffect(() => {
+  //   const speed = isDeleting ? 30 : 60;
+
+  //   const timer = setTimeout(() => {
+  //     if (!isDeleting) {
+  //       setDisplayedText(text.slice(0, index + 1));
+  //       setIndex(index + 1);
+
+  //       if (index + 1 === text.length) {
+  //         setTimeout(() => setIsDeleting(true), 1000); // pause at end
+  //       }
+  //     } else {
+  //       setDisplayedText(text.slice(0, index - 1));
+  //       setIndex(index - 1);
+
+  //       if (index === 0) {
+  //         setIsDeleting(false);
+  //       }
+  //     }
+  //   }, speed);
+
+  //   return () => clearTimeout(timer);
+  // }, [index, isDeleting]);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* ── HERO ── */}
@@ -126,6 +156,14 @@ export default function Home() {
               for Modern Schools
             </span>
           </h1>
+
+
+  {/* <h1 className="text-5xl sm:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight mb-6">
+      {displayedText}
+      <span className="animate-pulse">|</span>
+    </h1>
+   */}
+
 
           <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
             EduCore unifies student management, attendance, academics, library,

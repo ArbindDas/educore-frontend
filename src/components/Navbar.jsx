@@ -300,13 +300,10 @@ export default function Navbar({
 
         {/* Nav links */}
         {[
-          { label: "Dashboard",  to: "/dashboard" },
-          { label: "Academics",  to: "/academics"  },
-          { label: "Attendance", to: "/attendance" },
-          { label: "Library",    to: "/library"    },
-          { label: "Users",      to: "/users"      },
-          { label: "Reports",    to: "/reports"    },
-          { label: "Settings",   to: "/settings"   },
+          { label: "Principal",  to: "/principal" },
+          { label: "Teacher",  to: "/teacher"  },
+          { label: "Student", to: "/student" },
+          { label: "librarian",    to: "/librarian"    },
         ].map((item) => (
           <Link
             key={item.to}

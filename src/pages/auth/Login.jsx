@@ -1128,7 +1128,7 @@ export default function Login() {
           </div>
 
           {/* Google */}
-          <button
+          {/* <button
             className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4
                              border border-gray-200 dark:border-gray-700 rounded-xl text-sm
                              font-medium text-gray-700 dark:text-gray-300
@@ -1153,7 +1153,7 @@ export default function Login() {
               />
             </svg>
             Continue with Google
-          </button>
+          </button> */}
 
           <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-6">
             Don't have an account?{" "}
