@@ -1,8 +1,11 @@
+
+
+
+//  Form to add new teachers
 import { useState } from "react";
 import Modal from "../common/Modal";
 import InputField from "../common/InputField";
 import { PrimaryBtn, SecondaryBtn } from "../common/PrimaryBtn";
-
 const EMPTY_TEACHER_FORM = {
   user_id: "",
   phone_number: "",

@@ -61,10 +61,19 @@ export const createTeacher = async(teacherData)=>{
 }
 
 
-export const updateTeacherById = async(teacherData , teacherId)=>{
-    const response = await api.put(`teachers/${teacherId}/`, teacherData)
-    return response.data;
-}
+// export const updateTeacherById = async(teacherData , teacherId)=>{
+//     const response = await api.patch(`teachers/${teacherId}/`, teacherData)
+//     return response.data;
+// }
+
+
+export const updateTeacherById = async (teacherId, teacherData) => {
+  const response = await api.patch(
+    `teachers/${teacherId}/`,
+    teacherData
+  );
+  return response.data;
+};
 
 export const deleteTeacherById = async(teacherId)=>{
 

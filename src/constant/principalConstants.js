@@ -32,3 +32,12 @@ export const TEACHER_DEPARTMENTS = [
   "Physical Education",
   "Programming",
 ];
+
+// ✅ Experience level options
+export const EXPERIENCE_OPTIONS = [
+  { value: "Fresher", label: "Fresher (0-1 years)" },
+  { value: "1-3 years", label: "1-3 years" },
+  { value: "3-5 years", label: "3-5 years" },
+  { value: "5-10 years", label: "5-10 years" },
+  { value: "10+ years", label: "10+ years" },
+];
