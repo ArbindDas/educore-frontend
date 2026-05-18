@@ -1,7 +1,9 @@
 
+
 import { useEffect, useState } from "react";
 import { getMyStudentProfile } from "../../../services/studentService";
 import { getMyAttendanceRecord } from "../../../services/attendanceService";
+import { StudentBorrowedBook } from "../../../services/librarian";
 
 const ProfileField = ({ label, value, icon }) => (
   <div className="flex flex-col gap-1.5">
@@ -88,8 +90,40 @@ const StatsCard = ({ title, value, icon, color }) => {
   );
 };
 
+// Borrowed Book Card Component
+const BorrowedBookCard = ({ book }) => {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all duration-200 gap-3">
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-14 rounded-md bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white text-lg flex-shrink-0 shadow-sm">
+          📖
+        </div>
+        <div className="flex flex-col gap-1 min-w-0">
+          <span className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+            {book.book}
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            by {book.author}
+          </span>
+          {book.issue_date && (
+            <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-1">
+              <span>📅</span>
+              Issued: {new Date(book.issue_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="self-end sm:self-center flex-shrink-0">
+        <span className="text-xs px-2.5 py-1 rounded-full border font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800">
+          Borrowed
+        </span>
+      </div>
+    </div>
+  );
+};
+
 // Mobile Sidebar Component
-const MobileSidebar = ({ activeTab, setActiveTab, attendance, dark, setDark, initials, isOpen, setIsOpen }) => {
+const MobileSidebar = ({ activeTab, setActiveTab, attendance, books, dark, setDark, initials, isOpen, setIsOpen }) => {
   return (
     <>
       {/* Mobile Sidebar Overlay */}
@@ -124,10 +158,7 @@ const MobileSidebar = ({ activeTab, setActiveTab, attendance, dark, setDark, ini
 
           <nav className="space-y-1.5">
             <button
-              onClick={() => {
-                setActiveTab("profile");
-                setIsOpen(false);
-              }}
+              onClick={() => { setActiveTab("profile"); setIsOpen(false); }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 activeTab === "profile"
                   ? "bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900"
@@ -141,10 +172,7 @@ const MobileSidebar = ({ activeTab, setActiveTab, attendance, dark, setDark, ini
             </button>
 
             <button
-              onClick={() => {
-                setActiveTab("attendance");
-                setIsOpen(false);
-              }}
+              onClick={() => { setActiveTab("attendance"); setIsOpen(false); }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 activeTab === "attendance"
                   ? "bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900"
@@ -158,6 +186,26 @@ const MobileSidebar = ({ activeTab, setActiveTab, attendance, dark, setDark, ini
               {attendance && (
                 <span className="ml-auto text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">
                   {attendance.attendance_percentage}%
+                </span>
+              )}
+            </button>
+
+            {/* Books Tab - Mobile */}
+            <button
+              onClick={() => { setActiveTab("books"); setIsOpen(false); }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                activeTab === "books"
+                  ? "bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900"
+                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200"
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+              </svg>
+              Borrowed Books
+              {books && (
+                <span className="ml-auto text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">
+                  {Array.isArray(books) ? books.length : books.count ?? 0}
                 </span>
               )}
             </button>
@@ -195,8 +243,10 @@ const MobileSidebar = ({ activeTab, setActiveTab, attendance, dark, setDark, ini
 export default function StudentDashboard() {
   const [profile, setProfile] = useState(null);
   const [attendance, setAttendance] = useState(null);
+  const [books, setBooks] = useState(null);
   const [loading, setLoading] = useState(true);
   const [attendanceLoading, setAttendanceLoading] = useState(false);
+  const [booksLoading, setBooksLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [dark, setDark] = useState(() => {
@@ -238,15 +288,32 @@ export default function StudentDashboard() {
     }
   };
 
+  const loadBooks = async () => {
+    setBooksLoading(true);
+    try {
+      const data = await StudentBorrowedBook();
+      setBooks(data);
+    } catch (error) {
+      console.error("Failed to load borrowed books:", error);
+    } finally {
+      setBooksLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (activeTab === "attendance" && !attendance) {
       loadAttendance();
+    }
+    if (activeTab === "books" && !books) {
+      loadBooks();
     }
   }, [activeTab]);
 
   const initials = profile?.username
     ? profile.username.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
     : "??";
+
+  const bookList = Array.isArray(books) ? books : books?.results ?? books?.books ?? [];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
@@ -293,6 +360,26 @@ export default function StudentDashboard() {
                 </span>
               )}
             </button>
+
+            {/* Books Tab - Desktop */}
+            <button
+              onClick={() => setActiveTab("books")}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                activeTab === "books"
+                  ? "bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900"
+                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200"
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+              </svg>
+              Borrowed Books
+              {books && (
+                <span className="ml-auto text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">
+                  {bookList.length}
+                </span>
+              )}
+            </button>
           </nav>
         </div>
 
@@ -326,6 +413,7 @@ export default function StudentDashboard() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         attendance={attendance}
+        books={books}
         dark={dark}
         setDark={setDark}
         initials={initials}
@@ -351,12 +439,14 @@ export default function StudentDashboard() {
             
             <div className="flex-1 min-w-0">
               <h2 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                {activeTab === "profile" ? "Student Profile" : "Attendance Records"}
+                {activeTab === "profile" ? "Student Profile" : activeTab === "attendance" ? "Attendance Records" : "Borrowed Books"}
               </h2>
               <p className="text-xs text-gray-500 dark:text-gray-400 truncate hidden sm:block">
                 {activeTab === "profile" 
                   ? "View and manage your personal information" 
-                  : `Track your attendance for ${new Date().getFullYear()}`}
+                  : activeTab === "attendance"
+                  ? `Track your attendance for ${new Date().getFullYear()}`
+                  : "Books currently borrowed from the library"}
               </p>
             </div>
           </div>
@@ -595,6 +685,76 @@ export default function StudentDashboard() {
                   <p className="text-gray-500 dark:text-gray-400">Failed to load attendance data</p>
                   <button
                     onClick={loadAttendance}
+                    className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Books Tab */}
+          {activeTab === "books" && (
+            <div className="flex flex-col gap-6">
+              {booksLoading ? (
+                <div className="space-y-4">
+                  <div className="h-24 rounded-xl bg-gray-100 dark:bg-gray-800 animate-pulse" />
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="h-24 rounded-xl bg-gray-100 dark:bg-gray-800 animate-pulse" />
+                  ))}
+                </div>
+              ) : books ? (
+                <>
+                  {/* Summary Card */}
+                  <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-md overflow-hidden">
+                    <div className="h-1 w-full bg-gradient-to-r from-indigo-600 to-blue-500" />
+                    <div className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Library Books</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                          You have borrowed {bookList.length} book{bookList.length !== 1 ? "s" : ""}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">
+                          {bookList.length}
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Total Books</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Book Records */}
+                  <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-md overflow-hidden">
+                    <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-gray-800">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Borrowed Books</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        All books borrowed from the library
+                      </p>
+                    </div>
+                    <div className="p-4 sm:p-6">
+                      {bookList.length > 0 ? (
+                        <div className="space-y-3">
+                          {bookList.map((book, index) => (
+                            <BorrowedBookCard key={index} book={book} />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8 sm:py-12">
+                          <div className="text-6xl mb-4">📚</div>
+                          <p className="text-gray-500 dark:text-gray-400">No borrowed books found</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-8 sm:p-12 text-center">
+                  <div className="text-6xl mb-4">⚠️</div>
+                  <p className="text-gray-500 dark:text-gray-400">Failed to load borrowed books</p>
+                  <button
+                    onClick={loadBooks}
                     className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
                   >
                     Retry

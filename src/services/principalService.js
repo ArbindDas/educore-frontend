@@ -37,3 +37,18 @@ export const getMyPrincipalProfile = async () => {
     const response = await api.get("principal/profile/");
     return response.data;
 };
+
+export const createUserByPrincipal = async(data)=> {
+    const response = await api.post("create-user/", data)
+    return response.data;
+}
+
+
+export const getAllStudents = async()=>{
+    const response = await api.get("students/")
+    return response.data;
+}
+export const getAllTeachers = async()=>{
+    const response = await api.get("teachers/")
+    return response.data;
+}
