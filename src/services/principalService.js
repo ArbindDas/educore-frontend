@@ -12,6 +12,7 @@
 
 
 import axios from "axios";
+import { Await } from "react-router-dom";
 
 const BASE_URL = "http://localhost:8000/api";
 
@@ -33,6 +34,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+// this is for principal
 export const getMyPrincipalProfile = async () => {
     const response = await api.get("principal/profile/");
     return response.data;
@@ -44,14 +46,44 @@ export const createUserByPrincipal = async(data)=> {
 }
 
 
+// this is for Students
 export const getAllStudents = async()=>{
     const response = await api.get("students/")
     return response.data;
 }
+
+
+
+export const createStudentProfile = async(studentData)=>{
+    const response = await api.post("students/", studentData)
+    return response.data;
+}
+
+
+export const updateStudentById = async(studentId, studentData)=>{
+        const response = await api.patch(
+            `students/${studentId}/`, studentData
+        )
+
+        return response.data;
+}
+
+
+
+export const deleteStudentById = async(studentId)=>{
+    const response = await api.delete(
+        `students/${studentId}/`
+    )
+    return response.data;
+}
+
+
+// this is for Teachers
 export const getAllTeachers = async()=>{
     const response = await api.get("teachers/")
     return response.data;
 }
+
 
 
 export const createTeacher = async(teacherData)=>{
@@ -59,12 +91,6 @@ export const createTeacher = async(teacherData)=>{
     const response = await api.post("teachers/", teacherData)
     return response.data;
 }
-
-
-// export const updateTeacherById = async(teacherData , teacherId)=>{
-//     const response = await api.patch(`teachers/${teacherId}/`, teacherData)
-//     return response.data;
-// }
 
 
 export const updateTeacherById = async (teacherId, teacherData) => {
