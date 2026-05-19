@@ -1,30 +1,37 @@
-import { useState } from "react";
+
+
+// TeacherRow.jsx - CORRECT VERSION
+import { useState, useEffect } from "react";
 import EditTeacherModal from "./EditTeacherModal";
 import ConfirmModal from "../common/ConfirmModal";
-import { useTeachers } from "../../../hooks/useTeacher";
-// import { deleteTeacherById } from "../../../services/principalService";
-export default function TeacherRow({ teacher, onDelete }) {
+// ❌ REMOVE THIS: import { useTeachers } from "../../../hooks/useTeacher";
+
+export default function TeacherRow({ teacher, onUpdate, onDelete }) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const { updateTeacher, deleteTeacher } = useTeachers();
-
-  const handleDelete = async () => {
-    setIsDeleting(true);
-    const result = await deleteTeacher(teacher.id);
-    console.log("DELETE ID:", teacher.id);
-    console.log("TYPE:", typeof teacher.id);
-    setIsDeleting(false);
-    if (result.success) {
-      setShowDeleteModal(false);
-    }
-  };
+  
+  // ✅ REMOVE THIS: const { updateTeacher, deleteTeacher } = useTeachers();
 
   // Get username from teacher object
   const username = teacher.username || teacher.user?.username || "Unknown";
-  const joinedDate =
-    teacher.created_at || teacher.joined_date || new Date().toISOString();
+  const joinedDate = teacher.created_at || teacher.joined_date || new Date().toISOString();
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      // ✅ Use onDelete from props instead
+      const success = await onDelete(teacher.id);
+      
+      if (success) {
+        setShowDeleteModal(false);
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <>
@@ -49,18 +56,8 @@ export default function TeacherRow({ teacher, onDelete }) {
         {/* Phone */}
         <td className="px-4 sm:px-6 py-3.5">
           <div className="flex items-center gap-1.5">
-            <svg
-              className="w-3.5 h-3.5 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-              />
+            <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
             <span className="text-sm text-gray-600 dark:text-gray-300">
               {teacher.phone_number || "—"}
@@ -101,18 +98,8 @@ export default function TeacherRow({ teacher, onDelete }) {
               className="p-1.5 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 transition-colors"
               title="Edit Teacher"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                />
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
             </button>
 
@@ -121,18 +108,8 @@ export default function TeacherRow({ teacher, onDelete }) {
               className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 transition-colors"
               title="Delete Teacher"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
           </div>
@@ -144,7 +121,7 @@ export default function TeacherRow({ teacher, onDelete }) {
         <EditTeacherModal
           teacher={teacher}
           onClose={() => setShowEditModal(false)}
-          onUpdate={updateTeacher}
+          onUpdate={onUpdate} // ✅ Use onUpdate from props
         />
       )}
 
@@ -160,4 +137,4 @@ export default function TeacherRow({ teacher, onDelete }) {
       )}
     </>
   );
-}
+} 

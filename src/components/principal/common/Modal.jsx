@@ -1,7 +1,20 @@
+
+
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { XIcon } from "../icons/Icons";
 
 export default function Modal({ title, onClose, children }) {
-  return (
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -22,6 +35,7 @@ export default function Modal({ title, onClose, children }) {
         </div>
         <div className="px-6 py-5">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

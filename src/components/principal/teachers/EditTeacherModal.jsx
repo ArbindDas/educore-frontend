@@ -22,35 +22,39 @@ export default function EditTeacherModal({ teacher, onClose, onUpdate }) {
     }
   }, [teacher]);
 
-  const handleChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const handleChange = (e) =>
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
 
+    const result = await onUpdate(teacher.id, form);
 
-    const handleSubmit = async (e) => {
-  e.preventDefault();
-  setSubmitting(true);
+    setSubmitting(false);
 
-  const result = await onUpdate(teacher.id, form);
-
-  setSubmitting(false);
-
-  if (result) {
-    onClose();
-  }
-};
+    if (result) {
+      onClose();
+    }
+  };
 
   return (
-    <Modal title={`Edit Teacher: ${teacher.username || teacher.user?.username || 'Teacher'}`} onClose={onClose}>
+    <Modal
+      title={`Edit Teacher: ${teacher.username || teacher.user?.username || "Teacher"}`}
+      onClose={onClose}
+    >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 mb-2">
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            <span className="font-semibold">User:</span> {teacher.username || teacher.user?.username}
+            <span className="font-semibold">User:</span>{" "}
+            {teacher.username || teacher.user?.username}
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            <span className="font-semibold">User ID:</span> {teacher.user_id || teacher.user?.id}
+            <span className="font-semibold">User ID:</span>{" "}
+            {teacher.user_id || teacher.user?.id}
           </p>
         </div>
-        
+
         <InputField
           label="Phone Number"
           name="phone_number"
@@ -60,7 +64,7 @@ export default function EditTeacherModal({ teacher, onClose, onUpdate }) {
           placeholder="e.g. 9811122233"
           required
         />
-        
+
         <InputField
           label="Experience"
           name="experience"
@@ -69,7 +73,7 @@ export default function EditTeacherModal({ teacher, onClose, onUpdate }) {
           options={EXPERIENCE_OPTIONS}
           required
         />
-        
+
         <InputField
           label="Qualification"
           name="qualification"
@@ -80,9 +84,7 @@ export default function EditTeacherModal({ teacher, onClose, onUpdate }) {
         />
 
         <div className="flex justify-end gap-2 pt-2">
-          <SecondaryBtn onClick={onClose}>
-            Cancel
-          </SecondaryBtn>
+          <SecondaryBtn onClick={onClose}>Cancel</SecondaryBtn>
           <PrimaryBtn type="submit" disabled={submitting}>
             {submitting ? "Updating..." : "Update Teacher"}
           </PrimaryBtn>
