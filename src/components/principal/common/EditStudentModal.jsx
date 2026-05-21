@@ -30,6 +30,8 @@ export default function EditStudentModal({ student, onClose, onUpdate }) {
 
     try {
       const success = await onUpdate(student.id, form);
+      console.log('onUpdate : ',onUpdate);
+      
       if (success) {
         onClose();
       }

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import {
-  createStudentProfile,
+  createStudentProfile as apiCreateStudentProfile,
   deleteStudentById,
   getAllStudents,
   updateStudentById as apiUpdateStudent,
@@ -24,11 +24,13 @@ export const useStudents = () => {
     }
   }, []); // Empty dependency array because it doesn't depend on any props/state
 
-  return { students, studentsLoading, error, loadStudents };
+  // return { students, studentsLoading, error, loadStudents };
 
   const createStudentProfile = useCallback(async (studentData) => {
+      console.log("createStudentProfile called with:", studentData); // ← ADD THIS
     try {
-      const newStudent = await createStudentProfile(studentData);
+      const newStudent = await apiCreateStudentProfile(studentData);
+      console.log("API response:", newStudent); // ← ADD THIS
       setStudents((prev) => [...prev, newStudent]);
       // 👉 “It adds the new student to the existing students list and updates the state immutably.”
       // Slightly more detailed explanation
@@ -38,6 +40,7 @@ export const useStudents = () => {
       // setStudents replaces the old state with this new array
       return true;
     } catch (error) {
+      console.error("Create error details:", error); // ← ADD THIS
       setError(error);
       return false;
     }
@@ -46,7 +49,7 @@ export const useStudents = () => {
   const updateStudent = useCallback(async (studentId, studentData) => {
     try {
       const updatedStudent = await apiUpdateStudent(studentId, studentData);
-      console.log("API response : ", updateStudent);
+      console.log("API response : ", updatedStudent);
 
       // create a completely new array  with updated data
 
@@ -87,7 +90,7 @@ export const useStudents = () => {
   }, []);
 
   return {
-    student,
+    students,
     studentsLoading,
     error,
     loadStudents,
