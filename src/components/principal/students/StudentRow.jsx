@@ -1,6 +1,5 @@
 
 
-
 import { useState } from "react";
 import EditStudentModal from "../common/EditStudentModal";
 import ConfirmModal from "../common/ConfirmModal";
@@ -20,9 +19,6 @@ export default function StudentRow({ student, onUpdate, onDelete }) {
     setIsDeleting(true);
     try {
       const success = await onDelete(student.id);
-      console.log('onDelete : ', onDelete);
-      
-
       if (success) {
         setShowDeleteModal(false);
       }
@@ -30,6 +26,19 @@ export default function StudentRow({ student, onUpdate, onDelete }) {
       console.error("Delete error:", error);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleUpdate = async (id, data) => {
+    try {
+      const success = await onUpdate(id, data);
+      if (success) {
+        setShowEditModal(false);
+      }
+      return success;
+    } catch (error) {
+      console.error("Update error:", error);
+      return false;
     }
   };
 
@@ -132,7 +141,7 @@ export default function StudentRow({ student, onUpdate, onDelete }) {
         <EditStudentModal
           student={student}
           onClose={() => setShowEditModal(false)}
-          onUpdate={onUpdate}
+          onUpdate={handleUpdate}
         />
       )}
 

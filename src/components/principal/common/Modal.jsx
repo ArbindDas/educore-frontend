@@ -21,7 +21,7 @@ export default function Modal({ title, onClose, children }) {
         onClick={onClose}
       />
       <div className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="h-1 w-full bg-gradient-to-r from-indigo-600 to-blue-500" />
+        <div className="h-1 w-full bg-linear-to-r from-indigo-600 to-blue-500" />
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
           <h2 className="text-base font-bold text-gray-900 dark:text-white">
             {title}

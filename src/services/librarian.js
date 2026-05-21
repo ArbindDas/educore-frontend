@@ -51,9 +51,6 @@ export const returnedTheBook = async(issueId)=> {
     return response.data;
 } 
 
-
-
-
 export const getBookById = async(bookId)=>{
     const response = await api.get(`books/${bookId}/`)
     return response.data;

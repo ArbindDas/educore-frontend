@@ -4,14 +4,14 @@
 import { useState, useEffect } from "react";
 import EditTeacherModal from "./EditTeacherModal";
 import ConfirmModal from "../common/ConfirmModal";
-// ❌ REMOVE THIS: import { useTeachers } from "../../../hooks/useTeacher";
+
 
 export default function TeacherRow({ teacher, onUpdate, onDelete }) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   
-  // ✅ REMOVE THIS: const { updateTeacher, deleteTeacher } = useTeachers();
+
 
   // Get username from teacher object
   const username = teacher.username || teacher.user?.username || "Unknown";

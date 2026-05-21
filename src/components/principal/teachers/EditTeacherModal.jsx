@@ -3,6 +3,27 @@ import Modal from "../common/Modal";
 import InputField from "../common/InputField";
 import { PrimaryBtn, SecondaryBtn } from "../common/PrimaryBtn";
 import { EXPERIENCE_OPTIONS } from "../../../constant/principalConstants";
+
+
+
+// EditTeacherModal
+//     ↓
+// TeacherRow (onUpdate)
+//     ↓
+// TeachersTable
+//     ↓
+// TeachersTab
+//     ↓
+// PrincipalDashboard
+//     ↓
+// useTeachers().updateTeacher()
+//     ↓
+// API call (Spring Boot)
+//     ↓
+// Database update
+//     ↓
+// state updated → UI re-renders
+
 export default function EditTeacherModal({ teacher, onClose, onUpdate }) {
   const [form, setForm] = useState({
     phone_number: "",
