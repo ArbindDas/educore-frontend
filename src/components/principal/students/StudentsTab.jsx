@@ -60,8 +60,8 @@ export default function StudentsTab({
         setSearch={setStudentSearch}
         filteredStudents={filteredStudents}
         onCreateStudent={() => setShowAddModal(true)}
-        onUpdateStudent={onUpdateStudent}  // ✅ Use prop
-        onDeleteStudent={onDeleteStudent}  // ✅ Use prop
+        onUpdateStudent={onUpdateStudent}  
+        onDeleteStudent={onDeleteStudent}  
       />
 
       {showAddModal && (

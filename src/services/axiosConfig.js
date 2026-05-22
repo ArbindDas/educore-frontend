@@ -1,8 +1,13 @@
 // services/axiosConfig.js
 import axios from 'axios';
 
+
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8000/api/',
+  // baseURL: 'http://localhost:8000/api/',
+  baseURL: BASE_URL,
   timeout: 10000,
 });
 
@@ -34,9 +39,15 @@ axiosInstance.interceptors.response.use(
       
       try {
         const refreshToken = localStorage.getItem('refresh_token');
-        const response = await axios.post('http://localhost:8000/api/token/refresh/', {
-          refresh: refreshToken
-        });
+        // const response = await axios.post('http://localhost:8000/api/token/refresh/', {
+        //   refresh: refreshToken
+        // });
+
+
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/token/refresh/`, {
+          refresh:refreshToken
+        })
+        
         
         const { access } = response.data;
         localStorage.setItem('access_token', access);

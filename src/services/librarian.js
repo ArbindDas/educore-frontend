@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8000/api";
+
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -11,7 +14,7 @@ const api = axios.create({
 
 // ✅ FIXED: use correct token key
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access_token"); // 🔥 FIX HERE
+  const token = localStorage.getItem("access_token"); 
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -60,4 +63,9 @@ export const getBookById = async(bookId)=>{
 export const StudentBorrowedBook = async()=>{
     const response = await api.get("student/books/")
     return response.data;
+}
+
+export const LibrarianActiveIssuesView = async()=>{
+  const response = await api.get("librarian/active-issues/")
+  return response.data;
 }

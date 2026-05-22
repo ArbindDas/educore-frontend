@@ -1,24 +1,26 @@
-
-
 import axios from "axios";
 import axiosInstance from "./axiosConfig";
 import { jwtDecode } from "jwt-decode"; // npm install jwt-decode
 
 export const authService = {
-
   async login(username, password) {
     try {
-      const response = await axios.post("http://localhost:8000/api/token/", {
-        username,
-        password,
-      });
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/token/`,
+        {
+          username,
+          password,
+        },
+      );
 
       const { access, refresh } = response.data;
       localStorage.setItem("access_token", access);
       localStorage.setItem("refresh_token", refresh);
 
       // Set header for this session
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${access}`;
+      axiosInstance.defaults.headers.common["Authorization"] =
+        `Bearer ${access}`;
 
       return response.data;
     } catch (error) {
@@ -30,7 +32,8 @@ export const authService = {
   init() {
     const token = localStorage.getItem("access_token");
     if (token) {
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      axiosInstance.defaults.headers.common["Authorization"] =
+        `Bearer ${token}`;
     }
   },
 
@@ -49,9 +52,9 @@ export const authService = {
   },
 
   async logout() {
-  localStorage.clear();
-  delete axiosInstance.defaults.headers.common["Authorization"];
-},
+    localStorage.clear();
+    delete axiosInstance.defaults.headers.common["Authorization"];
+  },
 
   isAuthenticated() {
     const token = localStorage.getItem("access_token");
