@@ -10,8 +10,6 @@ export default function TeachersTable({
   loading,
   search,
   setSearch,
-  // departmentFilter,
-  // setDepartmentFilter,
   onCreateTeacher,
   onUpdateTeacher,
   onDeleteTeacher,
