@@ -17,6 +17,7 @@ export const authService = {
       const { access, refresh } = response.data;
       localStorage.setItem("access_token", access);
       localStorage.setItem("refresh_token", refresh);
+      console.log(localStorage.getItem("access_token"));
 
       // Set header for this session
       axiosInstance.defaults.headers.common["Authorization"] =

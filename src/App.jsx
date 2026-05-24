@@ -1,14 +1,26 @@
 
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "../src/pages/auth/Login"
+export default function App(){
 
-function App() {
- 
 
-  return (
-   <div>
-    jai shree ram
-   </div>
-  )
+
+    return(
+
+      <BrowserRouter>
+
+
+      <Routes>
+
+
+         <Route path="/login" element={<Login />} />
+
+
+         
+      </Routes>
+      
+      </BrowserRouter>
+    )
+
+
 }
-
-export default App
