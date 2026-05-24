@@ -12,6 +12,7 @@
 
 
 import axios from "axios";
+import { Rewind } from "lucide-react";
 import { Await } from "react-router-dom";
 
 
@@ -43,6 +44,14 @@ export const getMyPrincipalProfile = async () => {
 
 export const createUserByPrincipal = async(data)=> {
     const response = await api.post("create-user/", data)
+    return response.data;
+}
+
+// this is for teacher assignement
+
+
+export const TeacherAssignment = async(data)=>{
+    const response = await api.post("teacher-assign/",data)
     return response.data;
 }
 

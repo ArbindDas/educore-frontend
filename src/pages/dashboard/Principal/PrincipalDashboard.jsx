@@ -1,10 +1,10 @@
 
-
-
-
+// this is for Academics 
+import { useAcademicClasses } from "../../../services/useAcademicClasses";
 // this is for teacher
 import TeachersTab from "../../../components/principal/teachers/TeachersTab";
 import { useTeachers } from "../../../hooks/useTeacher";
+import { useTeacherAssignments } from "../../../services/useTeacherAssignments";
 
 // this is for Students
 import { useEffect, useState } from "react";
@@ -19,6 +19,7 @@ import { useTheme } from "../../../hooks/useTheme";
 import { useStudents } from "../../../hooks/useStudents";
 import { useUsers } from "../../../hooks/useUsers";
 import { getMyPrincipalProfile } from "../../../services/principalService";
+import TeacherAssignmentTab from "../../../components/principal/teacherAssignment/TeacherAssignmentTab";
 
 export default function PrincipalDashboard() {
   const [profile, setProfile] = useState(null);
@@ -29,17 +30,17 @@ export default function PrincipalDashboard() {
   const [initialDataLoaded, setInitialDataLoaded] = useState(false);
 
   const { dark, toggleTheme } = useTheme();
-  
+
   // ✅ SINGLE instance of useStudents
-  const { 
-    students, 
-    studentsLoading, 
+  const {
+    students,
+    studentsLoading,
     loadStudents,
-    updateStudent, 
-    deleteStudent, 
-    createStudentProfile 
+    updateStudent,
+    deleteStudent,
+    createStudentProfile,
   } = useStudents();
-  
+
   const {
     teachers,
     teachersLoading,
@@ -48,6 +49,24 @@ export default function PrincipalDashboard() {
     updateTeacher,
     deleteTeacher,
   } = useTeachers();
+
+  // ✅ Teacher Assignments hook
+  const {
+    teacherAssignments,
+    teacherAssignmentsLoading,
+    loadTeacherAssignments,
+    createTeacherAssignment,
+    getAssignmentsByTeacher,
+    getAssignmentsByClass,
+  } = useTeacherAssignments();
+
+  // ✅ Academic Classes hook
+  const { 
+    academicClasses, 
+    academicClassesLoading, 
+    loadAcademicClasses,
+    createAcademicClass 
+  } = useAcademicClasses();
 
   const { users, createUser, filterRole, setFilterRole, search, setSearch } =
     useUsers();
@@ -67,12 +86,14 @@ export default function PrincipalDashboard() {
     load();
   }, []);
 
-  // ✅ Load ALL data once on mount, not on tab change
+  // ✅ Load ALL data once on mount
   useEffect(() => {
     const loadAllData = async () => {
       await Promise.all([
         loadStudents(),
         loadTeachers(),
+        loadTeacherAssignments(),
+        loadAcademicClasses(), // Add this line
       ]);
       setInitialDataLoaded(true);
     };
@@ -109,10 +130,27 @@ export default function PrincipalDashboard() {
     }
   };
 
+  // ✅ Handle Teacher Assignment operations
+  const handleCreateTeacherAssignment = async (assignmentData) => {
+    const success = await createTeacherAssignment(assignmentData);
+    if (success) {
+      showToast("Teacher assigned successfully", "success");
+      return true;
+    } else {
+      showToast("Failed to assign teacher", "error");
+      return false;
+    }
+  };
+
   // ✅ Optional: Add manual refresh functionality
   const handleRefresh = async () => {
     showToast("Refreshing data...", "info");
-    await Promise.all([loadStudents(), loadTeachers()]);
+    await Promise.all([
+      loadStudents(),
+      loadTeachers(),
+      loadTeacherAssignments(),
+      loadAcademicClasses(), // Also refresh academic classes
+    ]);
     showToast("Data refreshed successfully", "success");
   };
 
@@ -129,6 +167,12 @@ export default function PrincipalDashboard() {
       label: "Students",
       icon: "Graduation",
       badge: students?.length || null,
+    },
+    {
+      id: "teacherAssignment",
+      label: "Teacher Assignment",
+      icon: "TeacherAssignment",
+      badge: teacherAssignments?.length || null,
     },
     {
       id: "users",
@@ -173,15 +217,16 @@ export default function PrincipalDashboard() {
           dark={dark}
           toggleTheme={toggleTheme}
           students={students}
+          teacherAssignments={teacherAssignments}
           onMenuClick={() => setMobileSidebarOpen(true)}
-          onRefresh={handleRefresh} // Optional: Add refresh button in Topbar
+          onRefresh={handleRefresh}
         />
 
         <div className="px-4 sm:px-6 py-6 sm:py-8">
           {activeTab === "profile" && (
             <ProfileTab profile={profile} loading={loading} />
           )}
-
+          
           {activeTab === "teachers" && (
             <TeachersTab
               teachers={teachers}
@@ -191,7 +236,7 @@ export default function PrincipalDashboard() {
               onDeleteTeacher={deleteTeacher}
             />
           )}
-
+          
           {activeTab === "students" && (
             <StudentsTab
               students={students}
@@ -201,7 +246,17 @@ export default function PrincipalDashboard() {
               onDeleteStudent={deleteStudent}
             />
           )}
-
+          
+          {activeTab === "teacherAssignment" && (
+            <TeacherAssignmentTab
+              assignments={teacherAssignments}
+              loading={teacherAssignmentsLoading}
+              teachers={teachers}
+              academicClasses={academicClasses}
+              onCreateAssignment={handleCreateTeacherAssignment}
+            />
+          )}
+          
           {activeTab === "users" && (
             <UsersTab
               users={users}

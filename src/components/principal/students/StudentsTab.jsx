@@ -3,7 +3,6 @@ import StudentTable from "./StudentTable";
 import { KPICard } from "../common/KPICard";
 import { useState } from "react";
 import AddStudentModal from "../common/AddStudentModal";
-
 export default function StudentsTab({
    students,
    loading,
