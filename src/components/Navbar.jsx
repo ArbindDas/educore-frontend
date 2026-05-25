@@ -6,11 +6,14 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+
+
 import {
   Sun, Moon, Bell, Calendar,
   Search, ChevronDown, Menu, School,
   LogIn, UserPlus, X,
 } from "lucide-react";
+
 
 const ROLE_STYLES = {
   Admin:     "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400",
@@ -35,6 +38,9 @@ export default function Navbar({
   notificationCount = 3,
   isAuthenticated = true,
 }) {
+
+
+
   const [dark, setDark] = useState(
     () => localStorage.getItem("theme") === "dark"
   );
@@ -235,20 +241,6 @@ export default function Navbar({
                 <span className="hidden sm:inline">Login</span>
               </Link>
 
-              {/* Signup */}
-              <Link
-                to="/signup"
-                className="
-                  flex items-center gap-1.5
-                  px-3 py-1.5 rounded-lg text-[13px] font-medium
-                  bg-indigo-600 hover:bg-indigo-700
-                  text-white transition-all duration-200
-                  active:scale-[0.98]
-                "
-              >
-                <UserPlus size={14} />
-                <span className="hidden sm:inline">Sign up</span>
-              </Link>
             </div>
           )}
         </div>
